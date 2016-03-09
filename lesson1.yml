@@ -1,0 +1,60 @@
+---
+# This is the first play
+# The name of the file is "Copy file"
+# This play has only one task
+- hosts: localhost
+  name: copy a file
+  tasks:
+  - name: copy file README to the remote host
+    copy:
+      src: README.md
+      dest: /home/akoshodi/devops/README.md
+
+  - name: Install nginx (Debian)
+    apt:
+      name: nginx
+      state: latest
+      update_cache: yes
+      sudo: true
+    when: ansible_os_family=='RedHat'
+    
+  # - name: Create user
+  #     user: ansible
+  #     state: present
+  #     when: ansible_os_family=='RedHat'
+
+
+      
+  - name: Clone a git repo to a a path
+    git:
+      repo: https://github.com/AAROC/AnsibleContainer.git
+      dest: /home/akoshodi/devops/AContainer
+  - name: Install Apache2 (RedHat)
+    yum:
+      name: httpd
+      state: latest
+      # update_cache: yes
+      service:
+      name: httpd
+      state: started    
+    when: ansible_os_family=='RedHat'
+
+  - name: Install Apache2 (Debian)
+    apt:
+      name: apache2
+      state: latest
+      update_cache: yes
+      service:
+      name: apache2
+      state: started
+    sudo: true
+    when: ansible_os_family=='Debian'
+  - name: simulate long running op (15 sec), wait for up to 45 sec, poll every 5 sec
+    command: /bin/sleep 15
+    async: 45
+    poll: 5
+
+
+
+
+  
